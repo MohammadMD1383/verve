@@ -17,12 +17,12 @@ fn main() {
 	fp.skip_executable()
 
 	help := fp.bool("help", `h`, false, "show this help message")
+	verbose := fp.bool("verbose", `v`, false, "show logs")
 	port := fp.int("port", `p`, 7777, "the port to be used [=7777]")
-	dir := fp.string("dir", `d`, ".", "the dir to serve its content [='.']")
+	dir := fp.string("dir", `d`, os.getwd(), "the dir to serve its content [=cwd]")
 
 	fp.finalize() or {
-		eprintln(err)
-		println(fp.usage())
+		eprintln("error: use `verve --help` to see usage")
 		return
 	}
 
@@ -31,12 +31,15 @@ fn main() {
 		return
 	}
 
+	if verbose { println("[verve]: port is `$port`") }
+
+	path := if os.is_abs_path(dir) { dir } else { os.resource_abs_path(dir) }
+	if verbose { println("[verve]: dir is `$path`") }
+
 	mut server := &Server{}
-	server.mount_static_folder_at(
-		if os.is_abs_path(dir) { dir } else { os.resource_abs_path(dir) },
-		"/"
-	)
-	
+	server.mount_static_folder_at(path, "/")
+	if verbose { println("[verve]: config done") }
+
 	vweb.run(server, port)
 }
 
