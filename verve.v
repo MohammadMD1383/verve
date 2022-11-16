@@ -12,7 +12,7 @@ fn main() {
 	mut fp := flag.new_flag_parser(os.args)
 	fp.application("verve")
 	fp.version("1.0.0")
-	fp.limit_free_args(0, 0)?
+	fp.limit_free_args(0, 0)!
 	fp.description("simple, fast and powerful static file server with no dependencies written in V")
 	fp.skip_executable()
 

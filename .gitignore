@@ -7,3 +7,4 @@ verve
 *.dylib
 *.dll
 vls.log
+.idea
